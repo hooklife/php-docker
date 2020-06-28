@@ -1,0 +1,10 @@
+ARG ALPINE_VERSION
+ARG PHP_VERSION
+
+FROM hooklife/laravel-all-in-one:php-fpm-nginx-${PHP_VERSION}-alpine-${ALPINE_VERSION}
+RUN echo '*  *  *  *  * /usr/local/bin/php  /app/artisan schedule:run >> /dev/null 2>&1' > /etc/crontabs/root
+
+COPY config/supervisord/conf.d/horizon.conf /etc/supervisor/conf.d/
+COPY config/supervisord/conf.d/crontab.conf /etc/supervisor/conf.d/
+
+CMD ["/usr/local/bin/supervisord"]

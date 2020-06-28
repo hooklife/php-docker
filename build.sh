@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -e
 
@@ -9,8 +9,8 @@ function build_and_push(){
     VERSION=${1}
     ALPINE_VERSION=${2}
     PHP_VERSION=${3}
-    build ${ALPINE_VERSION} ${PHP_VERSION}
-    push ${ALPINE_VERSION} ${PHP_VERSION}
+    build ${VERSION} ${ALPINE_VERSION} ${PHP_VERSION}
+    push ${VERSION} ${ALPINE_VERSION} ${PHP_VERSION}
 }
 function build() {
     VERSION=${1}

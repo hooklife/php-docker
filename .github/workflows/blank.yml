@@ -19,6 +19,6 @@ jobs:
         name: build
         run: |
           TAG=${GITHUB_REF#refs/tags/}
-          sh build.sh bash ${TAG}
+          sh build.sh base ${TAG}
           
           

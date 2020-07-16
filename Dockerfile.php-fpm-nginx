@@ -1,7 +1,8 @@
 ARG ALPINE_VERSION
 ARG PHP_VERSION
+ARG VERSION
 
-FROM hooklife/laravel-all-in-one:php-fpm-${PHP_VERSION}-alpine-${ALPINE_VERSION}
+FROM hooklife/php-docker:php-fpm-${PHP_VERSION}-alpine-${ALPINE_VERSION}-${VERSION}
 
 
 

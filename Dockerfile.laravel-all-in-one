@@ -78,13 +78,4 @@ RUN set -ex; \
 
 COPY rootfs /
 
-# run s6 supervisor
 ENTRYPOINT ["/init"]
-
-# RUN echo '*  *  *  *  * /usr/local/bin/php  /app/artisan schedule:run >> /dev/null 2>&1' > /etc/crontabs/root
-
-# COPY config/supervisord/conf.d/horizon.conf /etc/supervisor/conf.d/
-# COPY config/supervisord/conf.d/crontab.conf /etc/supervisor/conf.d/
-
-# EXPOSE 80
-# CMD ["/usr/local/bin/supervisord"]

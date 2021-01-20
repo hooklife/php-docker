@@ -2,12 +2,14 @@ ARG ALPINE_VERSION
 FROM alpine:$ALPINE_VERSION
 
 ARG ALPINE_VERSION
-ARG PHP_VERSION
-ARG S6_OVERLAY_VERSION
+ARG PHP_VERSION=7.4
+ARG S6_OVERLAY_VERSION=2.1.0.2
+ARG COMPOSER_VERSION=1
 
-ENV S6_OVERLAY_VERSION=v2.1.0.2 \
+ENV S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION} \
     TIME_ZONE=Asia/Shanghai \
-    PHP_VERSION=7.4
+    PHP_VERSION=${PHP_VERSION} \
+    COMPOSER_VERSION=${COMPOSER_VERSION}
 
 # trust this project public key to trust the packages.
 ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
@@ -18,7 +20,7 @@ ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-a
 RUN set -ex; \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && addgroup -g 1000 -S www-data  \
-    && adduser -u 1000 -D -S -G www-data www-data \
+    && adduser -u 1000 -s /bin/sh -D -S -G www-data www-data \
     # change apk source repo
     && apk --update add ca-certificates \
     && echo "https://dl.bintray.com/php-alpine/v$ALPINE_VERSION/php-$PHP_VERSION" >> /etc/apk/repositories\
@@ -58,15 +60,15 @@ RUN set -ex; \
     php7-xmlreader \
     php7-pcntl \
     php7-session \
-    php7-fpm \
     php7-opcache \
+    php7-fpm \
     nginx \
-    && ln -sf /usr/bin/php7 /usr/bin/php \
     # install composer
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && ln -sf /usr/bin/php7 /usr/bin/php \
+    && curl -sS https://getcomposer.org/installer | php -- --${COMPOSER_VERSION} --install-dir=/usr/local/bin --filename=composer \
     && composer --version \
     #  install s6 overlay
-    && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / \
+    && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / \
     # timezone
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
     && echo "${TIME_ZONE}" > /etc/timezone \

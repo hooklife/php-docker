@@ -1,5 +1,0 @@
-#!/bin/sh
-
-if [[ "$ENABLE_LARAVEL_HORIZON" == "1" ]]; then
-    php artisan horizon
-fi

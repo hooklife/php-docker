@@ -80,4 +80,5 @@ RUN set -ex; \
 
 COPY rootfs /
 
+RUN ln -s /etc/services.example/php-fpm /etc/services.d
 ENTRYPOINT ["/init"]

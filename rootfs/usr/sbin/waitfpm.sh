@@ -12,4 +12,7 @@ do
       echo "FPM is running and ready. Starting nginx."
       break
   esac
+  echo "wait php-fpm"
 done
+
+

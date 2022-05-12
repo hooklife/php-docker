@@ -1,3 +1,4 @@
+
 FROM alpine:3.11
 
 ARG ALPINE_VERSION
@@ -67,9 +68,6 @@ RUN set -ex; \
     && ln -sf /usr/bin/php7 /usr/bin/php \
     && curl -sS https://getcomposer.org/installer | php -- --${COMPOSER_VERSION} --install-dir=/usr/local/bin --filename=composer \
     # && composer --version \
-    #  install s6 overlay
-    && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz | tar Jxp -C / \
-    && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz | tar Jxp -C / \
     # timezone
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
     && echo "${TIME_ZONE}" > /etc/timezone \
@@ -81,4 +79,4 @@ RUN set -ex; \
 
 COPY rootfs /
 
-ENTRYPOINT ["/init"]
+

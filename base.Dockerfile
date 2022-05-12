@@ -1,9 +1,8 @@
-ARG ALPINE_VERSION
-FROM alpine:$ALPINE_VERSION
+FROM alpine:3.11
 
 ARG ALPINE_VERSION
 ARG PHP_VERSION=7.4
-ARG S6_OVERLAY_VERSION=2.1.0.2
+ARG S6_OVERLAY_VERSION=3.1.0.1
 ARG COMPOSER_VERSION=1
 
 ENV S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION} \
@@ -12,22 +11,22 @@ ENV S6_OVERLAY_VERSION=${S6_OVERLAY_VERSION} \
     COMPOSER_VERSION=${COMPOSER_VERSION}
 
 # trust this project public key to trust the packages.
-ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+ADD https://php.hernandev.com/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
 ##
 # ---------- building ----------
 ##
 RUN set -ex; \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && addgroup -g 1000 -S www-data  \
-    && adduser -u 1000 -s /bin/sh -D -S -G www-data www-data \
+    && addgroup -g 82 -S www-data \
+    && adduser -u 82 -D -S -G www-data www-data\
     # change apk source repo
     && apk --update add ca-certificates \
-    && echo "https://dl.bintray.com/php-alpine/v$ALPINE_VERSION/php-$PHP_VERSION" >> /etc/apk/repositories\
+    && echo "https://php.hernandev.com/v3.11/php-$PHP_VERSION" >> /etc/apk/repositories\
     && apk update \
     && apk add --no-cache \
-    # Install base packages ('ca-certificates' will install 'nghttp2-libs')
-    tar \
+    # # Install base packages ('ca-certificates' will install 'nghttp2-libs')
+    # tar \
     curl \
     libressl \
     tzdata \
@@ -63,12 +62,14 @@ RUN set -ex; \
     php7-opcache \
     php7-fpm \
     nginx \
+    fcgi \
     # install composer
     && ln -sf /usr/bin/php7 /usr/bin/php \
     && curl -sS https://getcomposer.org/installer | php -- --${COMPOSER_VERSION} --install-dir=/usr/local/bin --filename=composer \
-    && composer --version \
+    # && composer --version \
     #  install s6 overlay
-    && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / \
+    && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz | tar Jxp -C / \
+    && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz | tar Jxp -C / \
     # timezone
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
     && echo "${TIME_ZONE}" > /etc/timezone \

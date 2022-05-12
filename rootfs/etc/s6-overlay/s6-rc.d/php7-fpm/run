@@ -1,4 +1,0 @@
-#!/command/execlineb -P
-/usr/sbin/php-fpm7 --force-stderr --nodaemonize --fpm-config /usr/local/etc/php-fpm.d/www.conf
-
-

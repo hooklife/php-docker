@@ -1,4 +1,6 @@
-#!/command/with-contenv sh
+#!/usr/bin/env bash
+
+
 echo date.timezone=$(cat /etc/timezone) > /etc/php7/conf.d/99-timezone.ini
 
 sed -i "s/pm.max_children = PM_MAX_CHILDREN/pm.max_children = ${PM_MAX_CHILDREN:=20}/" /usr/local/etc/php-fpm.d/www.conf
@@ -19,3 +21,19 @@ if [[ "$ENABLE_CRONTAB" == "1" ]]; then
     echo '*  *  *  *  * /usr/local/bin/php  /app/artisan schedule:run >> /dev/null 2>&1' > /etc/crontabs/root
 fi
 
+if [[ -f "/sbin/init.sh" ]]; then
+    /sbin/init.sh
+fi
+
+
+
+(/usr/sbin/php-fpm7 --force-stderr --nodaemonize --fpm-config /usr/local/etc/php-fpm.d/www.conf &) | grep -q "xxxxxx"
+
+
+
+
+/usr/sbin/nginx -g "daemon off; error_log /dev/stderr warn;" &
+
+echo "Nginx is running"
+
+wait -n

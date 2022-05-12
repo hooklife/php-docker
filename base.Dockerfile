@@ -22,7 +22,7 @@ RUN set -ex; \
     && addgroup -g 82 -S www-data \
     && adduser -u 82 -D -S -G www-data www-data\
     # change apk source repo
-    && apk --update add ca-certificates \
+    && apk --update add ca-certificates bash tini \
     && echo "https://php.hernandev.com/v3.11/php-$PHP_VERSION" >> /etc/apk/repositories\
     && apk update \
     && apk add --no-cache \
@@ -80,3 +80,4 @@ RUN set -ex; \
 COPY rootfs /
 
 
+ENTRYPOINT ["/sbin/tini", "--", "/usr/sbin/entrypoint.sh"]
